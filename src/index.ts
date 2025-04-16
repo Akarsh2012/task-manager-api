@@ -2,24 +2,21 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db";
+import taskRoutes from "./routes/taskRoutes"; // Import the routes
 
 dotenv.config();
+connectDB();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// Middlewares
+// Middleware
 app.use(cors());
-app.use(express.json()); // Parses incoming JSON
+app.use(express.json()); // Parse incoming requests with JSON payloads
 
-// Test route
-app.get("/", (req, res) => {
-  res.send("🚀 Task Management API is running!");
-});
+// Use Task Routes
+app.use("/api", taskRoutes); // Mount routes on /api
 
-// Connect to MongoDB and start server
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`✅ Server is running on http://localhost:${PORT}`);
-  });
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}/api`);
 });
