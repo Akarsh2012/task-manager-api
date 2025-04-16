@@ -2,19 +2,17 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db";
-import taskRoutes from "./routes/taskRoutes"; // Import the routes
+import taskRoutes from "./routes/taskRoutes";
 
 dotenv.config();
 connectDB();
 
 const app = express();
 
-// Middleware
 app.use(cors());
-app.use(express.json()); // Parse incoming requests with JSON payloads
+app.use(express.json());
 
-// Use Task Routes
-app.use("/api", taskRoutes); // Mount routes on /api
+app.use("/api", taskRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
