@@ -5,11 +5,10 @@ import {
   getTaskById,
   updateTask,
   deleteTask,
-} from "../controllers/taskControllers"; // Correctly import controller functions
+} from "../controllers/taskControllers";
 
 const router = express.Router();
 
-// Define the routes
 router.get("/tasks", getTasks); // Get all tasks
 router.post("/tasks", createTask); // Create a new task
 router.get("/tasks/:id", getTaskById); // Get task by ID

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Task from "../models/task"; // Assuming you have a Task model
+import Task from "../models/task"; 
 
 // Create a Task
 export const createTask = async (
@@ -21,11 +21,34 @@ export const createTask = async (
   }
 };
 
-// Get All Tasks
+// Get All Tasks with Pagination and Filtering by Status
 export const getTasks = async (req: Request, res: Response): Promise<void> => {
+  const { page = 1, limit = 10, status } = req.query;
+
+  // Default query object
+  const query: any = {};
+
+  // If a status is provided, filter by it
+  if (status) {
+    query.status = status;
+  }
+
   try {
-    const tasks = await Task.find();
-    res.status(200).json(tasks);
+    // Fetch tasks with pagination and filtering
+    const tasks = await Task.find(query)
+      .skip((Number(page) - 1) * Number(limit)) // Skip based on page number
+      .limit(Number(limit)); // Limit the number of tasks per page
+
+    // Get the total count of tasks matching the query (for pagination)
+    const totalTasks = await Task.countDocuments(query);
+
+    // Return tasks with pagination info
+    res.status(200).json({
+      tasks,
+      totalTasks,
+      totalPages: Math.ceil(totalTasks / Number(limit)), // Calculate total pages
+      currentPage: Number(page),
+    });
   } catch (err) {
     res.status(500).json({ message: "Failed to get tasks", error: err });
   }
